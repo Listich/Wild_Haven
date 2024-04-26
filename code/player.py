@@ -7,7 +7,7 @@ class Player(pygame.sprite.Sprite):
 
 		self.animations = None
 		self.import_assets()
-		self.status = 'left_water'
+		self.status = 'down'
 		self.frame_index = 0
 
 		# general setup
@@ -31,6 +31,11 @@ class Player(pygame.sprite.Sprite):
 			full_path = os.path.join('..', 'graphics', 'character', animation)
 			self.animations[animation] = import_folder(full_path)
 
+	def animate(self,dt):
+		self.frame_index += 4 * dt
+		if self.frame_index >= len(self.animations[self.status]):
+			self.frame_index = 0
+		self.image = self.animations[self.status][int(self.frame_index)]
 	def input(self):
 		keys = pygame.key.get_pressed()
 
@@ -66,3 +71,4 @@ class Player(pygame.sprite.Sprite):
 	def update(self, dt):
 		self.input()
 		self.move(dt)
+		self.animate(dt)
