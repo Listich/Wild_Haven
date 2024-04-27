@@ -1,9 +1,0 @@
-        #general setup
-        self.image = pygame.Surface((32,64))
-        self.image.fill('green')
-        self.rect = self.image.get_rect(center = pos)
-
-        #movement attributes 
-        self.direction = pygame.math.Vector2(0,0)
-        self.pos = pygame.math.Vector2(self.rect.center)
-        self.speed = 200
