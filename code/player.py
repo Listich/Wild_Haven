@@ -23,13 +23,27 @@ class Player(pygame.sprite.Sprite):
 
 		#timers
 		self.timers = {
-			'tool use': Timer(350,self.use_tool)
+			'tool use': Timer(350,self.use_tool),
+			'tool switch': Timer(200),
+			'seed use': Timer(350, self.use_seed),
+			'seed switch': Timer(200),
+
 		}
 		#tools user
-		self.selected_tool = 'hoe'
+		self.tools = ['hoe', 'axe', 'water']
+		self.tool_index = 0
+		self.selected_tool = self.tools[self.tool_index]
+
+		#crée les graines
+		self.seeds = ['corn', 'tomato']
+		self.seed_index = 0
+		self.selected_seed = self.seeds[self.seed_index]
+
 	def use_tool(self):
 		print(self.selected_tool)
 
+	def use_seed(self):
+		pass
 	def import_assets(self):
 		self.animations = {
 			'up': [], 'down': [], 'left': [], 'right': [],
@@ -47,8 +61,9 @@ class Player(pygame.sprite.Sprite):
 		if self.frame_index >= len(self.animations[self.status]):
 			self.frame_index = 0
 		self.image = self.animations[self.status][int(self.frame_index)]
+
 	def input(self):
-		#function of directions
+		# Function of directions
 		keys = pygame.key.get_pressed()
 
 		if not self.timers['tool use'].active:
@@ -69,11 +84,30 @@ class Player(pygame.sprite.Sprite):
 				self.status = 'left'
 			else:
 				self.direction.x = 0
-			# tool use
+
+			# Tool use
 			if keys[pygame.K_SPACE]:
 				self.timers['tool use'].activate()
 				self.direction = pygame.math.Vector2()
 				self.frame_index = 0
+			# Change les objects
+			if keys[pygame.K_q] and not self.timers['tool switch'].active:
+				self.timers['tool switch'].activate()
+				self.tool_index += 1
+				self.tool_index = self.tool_index if self.tool_index < len(self.tools) else 0
+				self.selected_tool = self.tools[self.tool_index]
+			#function graine
+			if keys[pygame.K_LCTRL]:
+				self.timers['seed use'].activate()
+				self.direction = pygame.math.Vector2()
+				self.frame_index = 0
+
+			# change les graines
+			if keys[pygame.K_f] and not self.timers['seed switch'].active:
+				self.timers['seed switch'].activate()
+				self.seed_index += 1
+				self.seed_index = self.seed_index if self.seed_index < len(self.seeds) else 0
+				self.selected_seed = self.seeds[self.seed_index]
 	def get_status(self):
 		#idle
 		if self.direction.magnitude() == 0:
